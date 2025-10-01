@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
+import { cloudinary } from "@/lib/cloudinary";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,23 +18,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Convert to Buffer
+    // Convert to Base64
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
+    const base64 = buffer.toString("base64");
+    const fileUri = `data:${file.type};base64,${base64}`;
 
-    // Create unique filename
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const filename = `${uniqueSuffix}-${file.name}`;
+    // Upload to Cloudinary
+    const result = await cloudinary.uploader.upload(fileUri, {
+      folder: "birthday-cards",
+      resource_type: "image",
+      transformation: [
+        { quality: "auto:good" }, // Automatic quality optimization
+        { fetch_format: "auto" }, // Automatic format selection based on browser
+      ],
+    });
 
-    // Save to public directory
-    const publicDir = path.join(process.cwd(), "public/uploads");
-    const filepath = path.join(publicDir, filename);
-
-    await writeFile(filepath, buffer);
-
-    // Return the URL that can be used to access the file
+    // Return the secure URL that can be used to access the file
     return NextResponse.json({
-      url: `/uploads/${filename}`,
+      url: result.secure_url,
     });
   } catch (error) {
     console.error("Error uploading file:", error);

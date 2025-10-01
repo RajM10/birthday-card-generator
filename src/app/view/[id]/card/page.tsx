@@ -1,7 +1,7 @@
 "use client";
 import { Sparkles, Star } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 
 interface Particle {
@@ -95,6 +95,7 @@ function HeartParticles() {
 
 export default function GiftPage() {
   const TIMER = 3;
+  const { id } = useParams();
   const [showHint, setShowHint] = useState<boolean>(false);
   useEffect(() => {
     const timerId = setTimeout(() => {
@@ -134,7 +135,7 @@ export default function GiftPage() {
           <div
             className='text-2xl font-semibold text-background  cursor-pointer fixed top-1/2 '
             onClick={() => {
-              router.push("/slideshow");
+              router.push(`/view/${id}/slideshow`);
             }}>
             Click Me
           </div>
@@ -142,7 +143,7 @@ export default function GiftPage() {
         <Image
           className='cursor-pointer'
           onClick={() => {
-            router.push("/slideshow");
+            router.push(`/view/${id}/slideshow`);
           }}
           src='/asset/gift.png'
           alt='gift'

@@ -1,9 +1,33 @@
+"use client";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import BlobImage from "./BlobImage";
-import { message } from "@/const/Message";
+import { cardStorage } from "@/lib/cardStorage";
 
-export default function ImageSS({ currentIndex }: { currentIndex: number }) {
-  //BLOBS Data
+export default function ImageSS({
+  currentIndex,
+  id,
+}: {
+  currentIndex: number;
+  id: string;
+}) {
+  const [userData, setUserData] =
+    useState<ReturnType<typeof cardStorage.getCardById>>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const data = cardStorage.getCardById(id);
+    setUserData(data);
+  }, [id]);
+
+  // Don't render anything during server-side rendering
+  if (!isClient) {
+    return null;
+  }
+
+  const messages = userData?.messages;
+  if (!userData?.showSlideshow || !messages) return null;
   const BLOBS = [
     {
       transform: "translate(471.85600353062523 504.7754736627099)",
@@ -84,7 +108,7 @@ export default function ImageSS({ currentIndex }: { currentIndex: number }) {
     },
     {
       transform: "translate(474.67070565261906 459.52020284455097)",
-      path: "]M229.3 -358.8C288.1 -319 320.5 -240.1 350 -163.4C379.5 -86.7 406 -12.3 397.3 58C388.6 128.3 344.7 194.5 295.6 262.3C246.4 330.2 192.1 399.7 121.2 426.9C50.3 454.2 -37.1 439.1 -107.3 401.9C-177.5 364.6 -230.5 305.1 -290 246C-349.6 186.8 -415.8 128.1 -444.4 52.5C-473 -23 -463.9 -115.4 -425.7 -192.5C-387.6 -269.7 -320.3 -331.7 -244.5 -363.8C-168.7 -395.8 -84.3 -397.9 0.5 -398.6C85.2 -399.3 170.5 -398.6 229.3 -358.8",
+      path: "M229.3 -358.8C288.1 -319 320.5 -240.1 350 -163.4C379.5 -86.7 406 -12.3 397.3 58C388.6 128.3 344.7 194.5 295.6 262.3C246.4 330.2 192.1 399.7 121.2 426.9C50.3 454.2 -37.1 439.1 -107.3 401.9C-177.5 364.6 -230.5 305.1 -290 246C-349.6 186.8 -415.8 128.1 -444.4 52.5C-473 -23 -463.9 -115.4 -425.7 -192.5C-387.6 -269.7 -320.3 -331.7 -244.5 -363.8C-168.7 -395.8 -84.3 -397.9 0.5 -398.6C85.2 -399.3 170.5 -398.6 229.3 -358.8",
     },
     {
       transform: "translate(474.67070565261906 459.52020284455097)",
@@ -111,16 +135,20 @@ export default function ImageSS({ currentIndex }: { currentIndex: number }) {
       path: "M235.7 -319.3C312.8 -268.5 387.5 -209.3 412.2 -133.8C436.9 -58.3 411.5 33.6 375.5 115.1C339.5 196.6 292.9 267.8 228.5 311.6C164.2 355.3 82.1 371.7 4.3 365.7C-73.5 359.8 -147 331.6 -217.2 289.7C-287.4 247.9 -354.4 192.4 -396.9 116.1C-439.4 39.8 -457.5 -57.4 -425 -132.1C-392.5 -206.8 -309.4 -259.2 -230.1 -309.2C-150.9 -359.3 -75.4 -407.2 2 -409.9C79.4 -412.6 158.7 -370.1 235.7 -319.3",
     },
   ];
-  const { source, title, customMessage } = message.images[currentIndex];
+  const blobs = BLOBS.length;
+
+  const { image, wish } = messages[currentIndex];
+  // Use a deterministic value based on currentIndex
+  const blob = currentIndex % blobs;
   return (
     <div className='h-auto w-full relative'>
       <div
         className='relative w-[min(600px,100vw)] aspect-square mx-auto bg-black'
         key={currentIndex}>
         <BlobImage
-          blobTransform={BLOBS[currentIndex].transform}
-          blobPath={BLOBS[currentIndex].path}
-          imageSrc={source}
+          blobTransform={BLOBS[blob].transform}
+          blobPath={BLOBS[blob].path}
+          imageSrc={image}
           imageAlt={`Slide ${currentIndex + 1}`}
           className='w-full h-full'
         />
@@ -149,16 +177,8 @@ export default function ImageSS({ currentIndex }: { currentIndex: number }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
             className='text-xl font-bold'>
-            {title}
+            {wish}
           </motion.h2>
-          <motion.p
-            className='text-sm'
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}>
-            {customMessage}
-          </motion.p>
         </div>
       </div>
     </div>

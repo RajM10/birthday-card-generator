@@ -1,16 +1,17 @@
 "use client";
 import Blow from "@/components/Blow";
 import Cake from "@/components/Cake";
-import { redirect } from "next/navigation";
+import { redirect, useParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-function BCake() {
+function BirthdayCake() {
   const TIMER = 8;
   const [showBlow, setShowBlow] = useState<boolean>(false);
   const [isBlow, setIsBlow] = useState<boolean>(false);
   const windBlown = useRef<number>(0);
   const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const { id } = useParams();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,7 +54,7 @@ function BCake() {
               }
               setIsBlow(true);
               setShowBlow(false);
-              redirect("/wish");
+              redirect(`/view/${id}/wish`);
             }
           }
 
@@ -77,7 +78,7 @@ function BCake() {
         audioContextRef.current.close();
       }
     };
-  }, []);
+  }, [id]);
 
   return (
     <div className='absolute h-dvh w-dvw bg-gradient-to-br from-pink-950 via-purple-950 to-indigo-950'>
@@ -87,4 +88,4 @@ function BCake() {
   );
 }
 
-export default BCake;
+export default BirthdayCake;

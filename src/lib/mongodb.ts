@@ -1,7 +1,7 @@
 import { connection, connect } from "mongoose";
 const MONGODB_URI = process.env.MONGODB_URI;
 
-async function connectDB() {
+export default async function connectDB() {
   try {
     if (connection.readyState >= 1) {
       return;
@@ -19,5 +19,3 @@ async function connectDB() {
     throw error;
   }
 }
-
-export default connectDB;
