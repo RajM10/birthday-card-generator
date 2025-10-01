@@ -142,7 +142,7 @@ export default function BirthdayCardForm() {
               placeholder='Enter your name'
             />
             <Input
-              label="Recipient's Name"
+              label="Recipient's Name or Relation(Mom,Dad)"
               type='text'
               value={formData.name}
               onChange={(e) =>
@@ -152,7 +152,7 @@ export default function BirthdayCardForm() {
               placeholder="Enter recipient's name"
             />
             <Input
-              label='Birthday Message'
+              label='Write small Wish'
               value={formData.message}
               onChange={(e) =>
                 setFormData({ ...formData, message: e.target.value })
@@ -225,7 +225,7 @@ export default function BirthdayCardForm() {
                             setFormData({ ...formData, messages: newMessages });
                           }}
                           className='w-full h-[150px] p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/50 resize-none outline-none'
-                          placeholder='Write a message for this slide'
+                          placeholder='Write about that image memory or anything'
                         />
                       </div>
 

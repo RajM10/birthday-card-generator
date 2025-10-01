@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import BirthdayCard from "@/models/BirthdayCard";
 import connectDB from "@/lib/mongodb";
+import { encrypt, decrypt } from "@/lib/encryption";
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,16 +53,16 @@ export async function POST(req: NextRequest) {
 
       validatedMessages = messages
         .map((msg) => ({
-          wish: msg.wish || "",
+          wish: msg.wish ? encrypt(msg.wish) : "",
           image: msg.image || "",
         }))
         .filter((msg) => msg.wish || msg.image);
     }
 
     const birthdayCard = await BirthdayCard.create({
-      name,
-      senderName,
-      message,
+      name: encrypt(name),
+      senderName: encrypt(senderName),
+      message: encrypt(message),
       theme,
       showSlideshow,
       messages: validatedMessages,
@@ -81,7 +82,19 @@ export async function GET() {
   try {
     await connectDB();
     const birthdayCards = await BirthdayCard.find({}).sort({ createdAt: -1 });
-    return NextResponse.json(birthdayCards);
+
+    const decryptedCards = birthdayCards.map((card) => ({
+      ...card.toObject(),
+      name: decrypt(card.name),
+      senderName: decrypt(card.senderName),
+      message: decrypt(card.message),
+      messages: card.messages.map((msg: { wish: string; image: string }) => ({
+        wish: msg.wish ? decrypt(msg.wish) : "",
+        image: msg.image,
+      })),
+    }));
+
+    return NextResponse.json(decryptedCards);
   } catch (error) {
     console.error("Error fetching birthday cards:", error);
     return NextResponse.json(
