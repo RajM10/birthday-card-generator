@@ -5,12 +5,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import ImageSS from "@/components/ImageSS";
 import { useParams } from "next/navigation";
 import { cardStorage } from "@/lib/cardStorage";
+import { themeStyles } from "@/lib/themeStyles";
 
 export default function SlideShow() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const { id } = useParams();
-  const length = cardStorage.getCardById(id as string)?.messages.length || 1;
+  const card = cardStorage.getCardById(id as string);
+  const length = card?.messages.length || 1;
   const startTimer = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -46,7 +48,8 @@ export default function SlideShow() {
   };
 
   return (
-    <div className='h-dvh w-dvw snap-start flex items-center justify-center relative bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-400'>
+    <div
+      className={`h-dvh w-dvw snap-start flex items-center justify-center relative bg-gradient-to-br ${themeStyles[card?.theme || "friend"].gradient}`}>
       <ImageSS
         currentIndex={currentIndex}
         id={id as string}
@@ -73,13 +76,15 @@ export default function SlideShow() {
       </div>
 
       {/* Letter Page Button */}
-      <motion.a
-        href={`/view/${id}/letter`}
-        className='absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-xl shadow-lg transition-all'
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}>
-        View Letter
-      </motion.a>
+      {card?.message && (
+        <motion.a
+          href={`/view/${id}/letter`}
+          className='absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-xl shadow-lg transition-all'
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}>
+          View Letter
+        </motion.a>
+      )}
     </div>
   );
 }

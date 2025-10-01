@@ -11,8 +11,8 @@ export default function Input({
   ...props
 }: InputProps) {
   const inputClassName =
-    "w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/50";
-  const finalClassName = `${inputClassName} ${className}`;
+    "w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/50 outline-none focus:outline-none focus:ring-0";
+  const finalClassName = `${inputClassName} ${className} outline-none`;
 
   return (
     <div>

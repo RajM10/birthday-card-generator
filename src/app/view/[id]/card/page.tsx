@@ -3,6 +3,8 @@ import { Sparkles, Star } from "lucide-react";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { cardStorage } from "@/lib/cardStorage";
+import { themeStyles } from "@/lib/themeStyles";
 
 interface Particle {
   x: number;
@@ -97,6 +99,8 @@ export default function GiftPage() {
   const TIMER = 3;
   const { id } = useParams();
   const [showHint, setShowHint] = useState<boolean>(false);
+  const [card, setCard] = useState(cardStorage.getCardById(id as string));
+
   useEffect(() => {
     const timerId = setTimeout(() => {
       setShowHint(true);
@@ -105,11 +109,30 @@ export default function GiftPage() {
       clearTimeout(timerId);
     };
   }, []);
+
+  useEffect(() => {
+    async function fetchCard() {
+      try {
+        const response = await fetch(`/api/birthday-cards/${id}`);
+        if (!response.ok) throw new Error("Failed to fetch card");
+        const data = await response.json();
+        setCard(data);
+      } catch (error) {
+        console.error("Error fetching card:", error);
+      }
+    }
+    if (!card) fetchCard();
+  }, [id, card]);
+
   const router = useRouter();
+
+  if (!card) return null;
+
   return (
     <div
-      className='max-h-dvh relative h-dvh flex flex-col items-center justify-between'
-      style={{ background: "#b46ec8" }}>
+      className={`max-h-dvh relative h-dvh flex flex-col items-center justify-between bg-gradient-to-br ${
+        themeStyles[card.theme].gradient
+      }`}>
       <HeartParticles />
       {/* Cover at the top */}
       <div className='w-full flex gap-2 pt-6'>
@@ -134,11 +157,11 @@ export default function GiftPage() {
       <div className='w-full fixed bottom-0 transform flex justify-center animate-shake'>
         {showHint && (
           <div
-            className='text-2xl font-semibold text-background  cursor-pointer fixed top-1/2 '
+            className={`text-2xl font-semibold ${themeStyles[card.theme].accent} cursor-pointer fixed top-1/2 animate-bounce`}
             onClick={() => {
               router.push(`/view/${id}/slideshow`);
             }}>
-            Click Me
+            Click the Gift!
           </div>
         )}
         <Image

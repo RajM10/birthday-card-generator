@@ -224,7 +224,7 @@ export default function BirthdayCardForm() {
                             newMessages[index].wish = e.target.value;
                             setFormData({ ...formData, messages: newMessages });
                           }}
-                          className='w-full h-[150px] p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/50 resize-none'
+                          className='w-full h-[150px] p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/50 resize-none outline-none'
                           placeholder='Write a message for this slide'
                         />
                       </div>

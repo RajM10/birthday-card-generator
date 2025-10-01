@@ -542,7 +542,7 @@ function Fireworks() {
       if (data?.showSlideshow) {
         router.push(`/view/${id}/card`);
       }
-      if (data?.message) router.push(`/view/${id}/letter`);
+      else if (data?.message) router.push(`/view/${id}/letter`);
       else clearTimeout(timeout);
     }, timer * 1000);
 
