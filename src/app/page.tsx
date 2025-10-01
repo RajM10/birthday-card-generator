@@ -115,7 +115,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="bg-black/20 px-6 py-4 flex justify-end items-center gap-4">
                         <Link
-                          href={`/view/${card._id}/card`}
+                          href={`/view/${card._id}/`}
                           className="text-white/70 hover:text-white transition-colors"
                           title="View"
                         >
