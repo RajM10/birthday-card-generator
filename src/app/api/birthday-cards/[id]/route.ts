@@ -4,11 +4,12 @@ import connectDB from "@/lib/mongodb";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
     await connectDB();
-    const card = await BirthdayCard.findById(params.id);
+    const { id } = await context.params;
+    const card = await BirthdayCard.findById(id);
 
     if (!card) {
       return NextResponse.json(

@@ -7,8 +7,6 @@ import BirthdayCake from "@/components/BirthdayCake";
 export default function ViewPage() {
   const router = useRouter();
   const { id } = useParams();
-  const data = cardStorage.getCardById(id);
-  console.log(data);
   useEffect(() => {
     async function fetchAndRedirect() {
       try {
