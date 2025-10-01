@@ -39,6 +39,7 @@ export default function BlobImage({
             <AnimatePresence mode='wait'>
               <motion.img
                 key={imageSrc}
+                fetchPriority='high'
                 src={imageSrc}
                 alt={imageAlt}
                 initial={{ opacity: 0, scale: 0.9 }}

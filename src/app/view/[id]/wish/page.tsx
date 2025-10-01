@@ -539,7 +539,11 @@ function Fireworks() {
     });
 
     const timeout = setTimeout(() => {
-      router.push(`/view/${id}/card`);
+      if (data?.showSlideshow) {
+        router.push(`/view/${id}/card`);
+      }
+      if (data?.message) router.push(`/view/${id}/letter`);
+      else clearTimeout(timeout);
     }, timer * 1000);
 
     return () => {
@@ -547,6 +551,7 @@ function Fireworks() {
       window.removeEventListener("resize", () => {});
     };
   }, [
+    data,
     opts.balloonAddedInflateTime,
     opts.balloonAddedRadian,
     opts.balloonAddedSize,
@@ -583,7 +588,7 @@ function Fireworks() {
     opts.strings,
     opts.upFlow,
     router,
-    id
+    id,
   ]);
 
   return (

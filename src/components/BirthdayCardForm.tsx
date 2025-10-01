@@ -4,6 +4,7 @@ import { cardStorage } from "@/lib/cardStorage";
 import { Theme, themeStyles } from "@/lib/themeStyles";
 import { ImageIcon, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useState } from "react";
 
 interface Message {
@@ -130,21 +131,19 @@ export default function BirthdayCardForm() {
             <h2 className='text-3xl font-bold text-white text-center mb-8'>
               Create Birthday Card
             </h2>
-
             <Input
-              label="Your Name"
-              type="text"
+              label='Your Name'
+              type='text'
               value={formData.senderName}
               onChange={(e) =>
                 setFormData({ ...formData, senderName: e.target.value })
               }
               required
-              placeholder="Enter your name"
+              placeholder='Enter your name'
             />
-
             <Input
               label="Recipient's Name"
-              type="text"
+              type='text'
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
@@ -152,17 +151,17 @@ export default function BirthdayCardForm() {
               required
               placeholder="Enter recipient's name"
             />
-
             <Input
-              label="Birthday Message"
+              label='Birthday Message'
               value={formData.message}
               onChange={(e) =>
                 setFormData({ ...formData, message: e.target.value })
               }
               required
-              placeholder="Write your birthday message"
+              placeholder='Write your birthday message'
               multiline
-            />            <div>
+            />
+            <div>
               <label className='block text-white mb-2'>Theme</label>
               <div className='grid grid-cols-3 gap-4'>
                 {(["friend", "family", "love"] as const).map((theme) => (
@@ -180,7 +179,6 @@ export default function BirthdayCardForm() {
                 ))}
               </div>
             </div>
-
             <div>
               <label className='flex items-center text-white mb-4'>
                 <input
@@ -197,13 +195,12 @@ export default function BirthdayCardForm() {
                 Add Slideshow (up to 5 slides)
               </label>
             </div>
-
             {formData.showSlideshow && (
               <div className='space-y-4'>
                 {formData.messages.map((message, index) => (
                   <div
                     key={index}
-                    className='p-4 bg-white/5 rounded-xl border border-white/10'>
+                    className='p-4 '>
                     <div className='flex justify-between items-center mb-2'>
                       <h3 className='text-white'>Slide {index + 1}</h3>
                       <button
@@ -218,45 +215,93 @@ export default function BirthdayCardForm() {
                       </button>
                     </div>
 
-                    <div className='space-y-3'>
-                      <textarea
-                        value={message.wish}
-                        onChange={(e) => {
-                          const newMessages = [...formData.messages];
-                          newMessages[index].wish = e.target.value;
-                          setFormData({ ...formData, messages: newMessages });
-                        }}
-                        className='w-full p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/50'
-                        placeholder='Write a message for this slide'
-                      />
+                    <div className='flex gap-4'>
+                      <div className='flex-1'>
+                        <textarea
+                          value={message.wish}
+                          onChange={(e) => {
+                            const newMessages = [...formData.messages];
+                            newMessages[index].wish = e.target.value;
+                            setFormData({ ...formData, messages: newMessages });
+                          }}
+                          className='w-full h-[150px] p-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/50 resize-none'
+                          placeholder='Write a message for this slide'
+                        />
+                      </div>
 
-                      <div>
+                      <div className='w-[150px] flex flex-col gap-2'>
                         <input
                           type='file'
                           accept='image/*'
                           onChange={async (e) => {
                             try {
                               if (e.target.files?.[0]) {
+                                const newMessages = [...formData.messages];
+                                newMessages[index].uploading = true;
+                                setFormData({
+                                  ...formData,
+                                  messages: newMessages,
+                                });
+
                                 const imageUrl = await uploadFile(
                                   e.target.files[0]
                                 );
-                                const newMessages = [...formData.messages];
-                                newMessages[index].image = imageUrl;
+
+                                newMessages[index] = {
+                                  ...newMessages[index],
+                                  image: imageUrl,
+                                  uploading: false,
+                                };
                                 setFormData({
                                   ...formData,
                                   messages: newMessages,
                                 });
                               }
-                            } catch {}
+                            } catch {
+                              const newMessages = [...formData.messages];
+                              newMessages[index].uploading = false;
+                              setFormData({
+                                ...formData,
+                                messages: newMessages,
+                              });
+                            }
                           }}
                           className='hidden'
                           id={`image-${index}`}
                         />
+                        <div className='aspect-square w-full rounded-xl bg-white/5 border border-white/10 overflow-hidden relative'>
+                          {message.image ? (
+                            <Image
+                              src={message.image}
+                              alt='Preview'
+                              className='w-full h-full object-cover'
+                              width={150}
+                              height={150}
+                            />
+                          ) : (
+                            <div className='w-full h-full flex items-center justify-center text-white/50'>
+                              <ImageIcon className='w-8 h-8' />
+                            </div>
+                          )}
+                          {message.uploading && (
+                            <div className='absolute inset-0 bg-black/50 flex items-center justify-center text-white text-sm'>
+                              Uploading...
+                            </div>
+                          )}
+                        </div>
                         <label
                           htmlFor={`image-${index}`}
-                          className='flex items-center justify-center p-3 rounded-xl bg-white/5 border border-white/10 text-white cursor-pointer hover:bg-white/10'>
-                          <ImageIcon className='w-5 h-5 mr-2' />
-                          {message.image ? "Change Image" : "Add Image"}
+                          className={`flex items-center justify-center p-2 rounded-xl bg-white/5 border border-white/10 text-white cursor-pointer hover:bg-white/10 ${
+                            message.uploading
+                              ? "opacity-50 cursor-not-allowed"
+                              : ""
+                          }`}>
+                          <ImageIcon className='w-4 h-4 mr-2' />
+                          {message.uploading
+                            ? "Uploading..."
+                            : message.image
+                              ? "Change"
+                              : "Add Image"}
                         </label>
                       </div>
                     </div>

@@ -71,6 +71,15 @@ export default function SlideShow() {
           <ChevronRight />
         </SlideShowBtn>
       </div>
+
+      {/* Letter Page Button */}
+      <motion.a
+        href={`/view/${id}/letter`}
+        className='absolute top-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white px-4 py-2 rounded-xl shadow-lg transition-all'
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}>
+        View Letter
+      </motion.a>
     </div>
   );
 }

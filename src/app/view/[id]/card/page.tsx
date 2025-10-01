@@ -123,6 +123,7 @@ export default function GiftPage() {
         <Image
           src='/asset/HappyBirthday.svg'
           alt='Happy Birthday'
+          priority={true}
           width={600}
           height={600}
           style={{ objectFit: "contain" }}
