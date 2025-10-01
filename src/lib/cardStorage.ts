@@ -63,4 +63,29 @@ export const cardStorage = {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(filteredCards));
     }
   },
+
+  autoRemoveOldCards: () => {
+    if (typeof window !== "undefined") {
+      const data = localStorage.getItem(STORAGE_KEY);
+      if (!data) return;
+
+      const cards: BirthdayCard[] = JSON.parse(data);
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+
+      const recentCards = cards.filter((card) => {
+        if (!card.createdAt) {
+          return false; // Remove cards without a creation date
+        }
+        try {
+          const cardDate = new Date(card.createdAt);
+          return cardDate > threeDaysAgo;
+        } catch {
+          return false; // Remove cards with invalid date format
+        }
+      });
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(recentCards));
+    }
+  },
 };
