@@ -215,7 +215,7 @@ export default function BirthdayCardForm({ card }: BirthdayCardFormProps) {
             {formData.showSlideshow && (
               <div className="space-y-6 bg-black/10 p-6 rounded-2xl">
                 {formData.messages.map((message, index) => (
-                  <div key={index} className="p-4 bg-white/5 rounded-xl">
+                  <div key={index} className="py-2 px-3">
                     <div className="flex justify-between items-center mb-4">
                       <h3 className="text-white font-semibold">
                         Slide {index + 1}
