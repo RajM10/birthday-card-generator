@@ -40,7 +40,6 @@ const birthdayCardSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
     expires: 86400 * 3 ,
-    // expires: 8,
   },
 });
 
