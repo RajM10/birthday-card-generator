@@ -54,9 +54,7 @@ function BirthdayCake() {
               }
               setIsBlow(true);
               setShowBlow(false);
-              setTimeout(() => {
-                redirect(`/view/${id}/wish`);
-              }, 1000);
+              redirect(`/view/${id}/wish`);
             }
           }
 
