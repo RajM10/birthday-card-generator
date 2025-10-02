@@ -39,8 +39,8 @@ const birthdayCardSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
-    // expires: 86400 * 3 ,
-    expires: 8,
+    expires: 86400 * 3 ,
+    // expires: 8,
   },
 });
 
