@@ -41,7 +41,7 @@ function HeartParticles() {
             .slice(-maxParticles);
         });
       },
-      isMobile ? 300 : 200
+      isMobile ? 300 : 200,
     ); // Slower spawn rate on mobile
 
     return () => clearInterval(interval);
@@ -54,7 +54,7 @@ function HeartParticles() {
           ...p,
           y: p.y + p.speed,
           rotation: p.rotation + 1,
-        }))
+        })),
       );
     });
 
@@ -72,22 +72,23 @@ function HeartParticles() {
   }, []);
 
   return (
-    <div className='fixed inset-0 pointer-events-none overflow-hidden'>
+    <div className="fixed inset-0 pointer-events-none overflow-hidden">
       {particles.map((particle, index) => (
         <div
           key={index}
-          className='absolute text-pink-500'
+          className="absolute text-pink-500"
           style={{
             left: particle.x,
             top: particle.y,
             transform: `rotate(${particle.rotation}deg)`,
             fontSize: `${particle.size}px`,
             willChange: "transform", // Optimize for animations
-          }}>
+          }}
+        >
           {index % 2 === 0 ? (
-            <Sparkles className='fill-yellow-400' />
+            <Sparkles className="fill-yellow-400" />
           ) : (
-            <Star className='fill-yellow-400' />
+            <Star className="fill-yellow-400" />
           )}
         </div>
       ))}
@@ -98,6 +99,7 @@ function HeartParticles() {
 export default function GiftPage() {
   const TIMER = 3;
   const { id } = useParams();
+  const data = cardStorage.getCardById(id as string);
   const [showHint, setShowHint] = useState<boolean>(false);
   const [card, setCard] = useState(cardStorage.getCardById(id as string));
 
@@ -132,20 +134,21 @@ export default function GiftPage() {
     <div
       className={`max-h-dvh relative h-dvh flex flex-col items-center justify-between bg-gradient-to-br ${
         themeStyles[card.theme].gradient
-      }`}>
+      }`}
+    >
       <HeartParticles />
       {/* Cover at the top */}
-      <div className='w-full flex gap-2 pt-6'>
+      <div className="w-full flex gap-2 pt-6">
         <div className="top-0 fixed translate-y-[-20%] left-0 right-0 mx-auto  w-dvw h-32 bg-[url('/asset/cover.png')] bg-contain bg-repeat-x z-20" />
         <div className="top-0 fixed translate-x-[50%] translate-y-[-50%] left-0 right-0 mx-auto  w-dvw h-32 bg-[url('/asset/cover.png')] bg-contain bg-repeat-x z-30" />
         <div className="top-0 fixed translate-x-[-50%] translate-y-[-50%] left-0 right-0 mx-auto  w-dvw h-32 bg-[url('/asset/cover.png')] bg-contain bg-repeat-x z-10" />
       </div>
 
       {/* Happy Birthday SVG in the center */}
-      <div className='flex-1 flex items-center justify-center'>
+      <div className="flex-1 flex items-center justify-center">
         <Image
-          src='/asset/HappyBirthday.svg'
-          alt='Happy Birthday'
+          src="/asset/HappyBirthday.svg"
+          alt="Happy Birthday"
           priority={true}
           width={600}
           height={600}
@@ -154,23 +157,26 @@ export default function GiftPage() {
       </div>
 
       {/* Gift image near the bottom */}
-      <div className='w-full fixed bottom-0 transform flex justify-center animate-shake'>
+      <div className="w-full fixed bottom-0 transform flex justify-center animate-shake">
         {showHint && (
           <div
             className={`text-2xl font-semibold ${themeStyles[card.theme].accent} cursor-pointer fixed top-1/2 animate-bounce`}
             onClick={() => {
-              router.push(`/view/${id}/slideshow`);
-            }}>
+              if (data?.showSlideshow) router.push(`/view/${id}/card`);
+              else if (data?.message) router.push(`/view/${id}/slideshow`);
+            }}
+          >
             Click the Gift!
           </div>
         )}
         <Image
-          className='cursor-pointer'
+          className="cursor-pointer"
           onClick={() => {
-            router.push(`/view/${id}/slideshow`);
+            if (data?.showSlideshow) router.push(`/view/${id}/card`);
+            else if (data?.message) router.push(`/view/${id}/slideshow`);
           }}
-          src='/asset/gift.png'
-          alt='gift'
+          src="/asset/gift.png"
+          alt="gift"
           width={300}
           height={300}
           style={{ objectFit: "contain" }}

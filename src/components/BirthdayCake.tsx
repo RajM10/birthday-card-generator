@@ -44,7 +44,7 @@ function BirthdayCake() {
 
           if (lowFreqEnergy > 1500) {
             windBlown.current++;
-            if (windBlown.current > 34) {
+            if (windBlown.current > 28) {
               // Clean up audio before redirecting
               if (streamRef.current) {
                 streamRef.current.getTracks().forEach((track) => track.stop());
@@ -54,7 +54,9 @@ function BirthdayCake() {
               }
               setIsBlow(true);
               setShowBlow(false);
-              redirect(`/view/${id}/wish`);
+              setTimeout(() => {
+                redirect(`/view/${id}/wish`);
+              }, 1000);
             }
           }
 
@@ -81,7 +83,7 @@ function BirthdayCake() {
   }, [id]);
 
   return (
-    <div className='absolute h-dvh w-dvw bg-gradient-to-br from-pink-950 via-purple-950 to-indigo-950'>
+    <div className="absolute h-dvh w-dvw bg-gradient-to-br from-pink-950 via-purple-950 to-indigo-950">
       <Cake isBlown={isBlow} />
       {showBlow && <Blow />}
     </div>

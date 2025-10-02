@@ -539,10 +539,9 @@ function Fireworks() {
     });
 
     const timeout = setTimeout(() => {
-      if (data?.showSlideshow) {
+      if (data?.showSlideshow || data?.message) {
         router.push(`/view/${id}/card`);
       }
-      else if (data?.message) router.push(`/view/${id}/letter`);
       else clearTimeout(timeout);
     }, timer * 1000);
 
