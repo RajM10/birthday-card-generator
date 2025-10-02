@@ -162,8 +162,8 @@ export default function GiftPage() {
           <div
             className={`text-2xl font-semibold ${themeStyles[card.theme].accent} cursor-pointer fixed top-1/2 animate-bounce`}
             onClick={() => {
-              if (data?.showSlideshow) router.push(`/view/${id}/card`);
-              else if (data?.message) router.push(`/view/${id}/slideshow`);
+              if (data?.showSlideshow) router.push(`/view/${id}/slideshow`);
+              else if (data?.message) router.push(`/view/${id}/letter`);
             }}
           >
             Click the Gift!
@@ -172,8 +172,8 @@ export default function GiftPage() {
         <Image
           className="cursor-pointer"
           onClick={() => {
-            if (data?.showSlideshow) router.push(`/view/${id}/card`);
-            else if (data?.message) router.push(`/view/${id}/slideshow`);
+            if (data?.showSlideshow) router.push(`/view/${id}/slideshow`);
+            else if (data?.message) router.push(`/view/${id}/letter`);
           }}
           src="/asset/gift.png"
           alt="gift"
